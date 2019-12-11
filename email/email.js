@@ -8,7 +8,7 @@ const sendApiKeyEmail=(email, name, apiKey)=>{
         to:email,
         from:"johnpits85@gmail.com",
         subject:"Mountains Apikey",
-        text:`Thank you ${name} for registering to our service .You can use this ${apiKey} to query the database`
+        text:`Thank you ${name} for registering to our service. You can use your api-key too make requests.\n Api-Key: ${apiKey}` 
     })
 
 }

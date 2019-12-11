@@ -1,8 +1,10 @@
 const mongoose=require("mongoose");
 
+
 const mountainsSchema= new mongoose.Schema({
     Mountain:{
-        type:String
+        type:String,
+        
     },
     Metres:{
         type:Number
@@ -17,6 +19,7 @@ const mountainsSchema= new mongoose.Schema({
         type:String
     }
 });
+
 
 const Mountains=mongoose.model("mountains",mountainsSchema);
 

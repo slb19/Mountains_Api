@@ -1,6 +1,7 @@
 const express=require("express");
 const mongoose=require("mongoose");
 const uuidv4=require("uuid/v4");
+const bodyParser=require("body-parser")
 
 const app=express();
 
@@ -10,36 +11,49 @@ const sendApiKeyEmail=require("./email/email.js")
 const dataValidation=require("./middlewares/dataValidation.js")
 
 app.use(express.json());
+app.use(express.static(__dirname+"/public"));
+app.use(bodyParser.urlencoded({extended:true}));
 
 mongoose.connect("mongodb://127.0.0.1:27017/mountainsApi", {useNewUrlParser: true ,
                                                             useCreateIndex:true ,
                                                             useFindAndModify:false,
-                                                            useUnifiedTopology: true});
+                                                            useUnifiedTopology: true}).catch(error=>console.log(error));
+                                                                                                                       
 
+app.get("/", (req,res)=>{
+    res.render("landing.ejs");
+}); 
 
 app.post("/register", async (req,res)=>{
-
+   
     try{
-
+        if(!req.body.name || !req.body.email){
+            return res.status(400).json({error:"You have to provide all fields"})
+        }
         const apiKey=uuidv4();
 
         const newUser=new Users(req.body);
         newUser.apiKey=apiKey;
         
             await newUser.save();
-                sendApiKeyEmail(newUser.email, newUser.name, newUser.apiKey)
-                res.status(201).json({name:newUser.name , email:newUser.email, apiKey:newUser.apiKey})
-        
+            sendApiKeyEmail(newUser.email, newUser.name, apiKey)
+                res.status(201).json({name:newUser.name, email:newUser.email});
+
     }catch(error){
-        console.log(error)
-        res.status(500).json();
-    }
-})
-
-
+        
+        if(error.errors){
+            res.status(400).json({error:"Your name must be more than 3 characters"});
+        }
+        if(error.errmsg){
+            res.status(400).json({error:"This email is already taken"});
+        }else{
+            res.status(500).json({error:"Server Error"});
+        }   
+    }  
+});
 
 app.get("/api/mountains", dataValidation,async(req,res)=>{
-   //console.log(req.query.apiKey);
+   
     try{
         if(!req.query.apiKey) return res.status(401).json({msg:"No apiKey. If you dont have an apiKey please Regiser"});
 
@@ -54,7 +68,9 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
 
             const{r, c, mtm, mtf, ltm, ltf}=req.query;
             const range=r
+            const regexR = new RegExp( '(' + range + ')', 'gi' );
             const country=c
+            const regexC = new RegExp( '(' + country + ')', 'gi' );
             const moreThanMeters=Number(mtm)
             const moreThanFeet=Number(mtf)
             const lessThanMeters=Number(ltm)
@@ -64,7 +80,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
 
                 const data=[]
                     rows.forEach(row=>{
-                        if(row.Location_and_Notes.includes(country) && row.Range===range && (row.Metres>moreThanMeters ||
+                        if(row.Location_and_Notes.match(regexC) && row.Range.match(regexR) && (row.Metres>moreThanMeters ||
                                                                                              row.Feet>moreThanFeet || 
                                                                                              row.Metres<lessThanMeters || 
                                                                                              row.Feet<lessThanFeet)){
@@ -85,6 +101,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
 
             const{r, mtm, mtf, ltm, ltf}=req.query;
             const range=r
+            const regex = new RegExp( '(' + range + ')', 'gi' );
             const moreThanMeters=Number(mtm)
             const moreThanFeet=Number(mtf)
             const lessThanMeters=Number(ltm)
@@ -93,7 +110,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
                                 
                     const data=[]
                         rows.forEach(row=>{
-                            if(row.Range===range && (row.Metres>moreThanMeters ||
+                            if(row.Range.match(regex) && (row.Metres>moreThanMeters ||
                                                      row.Feet>moreThanFeet || 
                                                      row.Metres<lessThanMeters || 
                                                      row.Feet<lessThanFeet)){
@@ -114,6 +131,8 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
 
             const{c, mtm, mtf, ltm, ltf}=req.query;
             const country=c
+            const regex = new RegExp( '(' + country + ')', 'gi' );
+            
             const moreThanMeters=Number(mtm)
             const moreThanFeet=Number(mtf)
             const lessThanMeters=Number(ltm)
@@ -122,7 +141,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
                                                     
                     const data=[]
                         rows.forEach(row=>{
-                            if(row.Location_and_Notes.includes(country) && (row.Metres>moreThanMeters || 
+                            if(row.Location_and_Notes.match(regex) && (row.Metres>moreThanMeters || 
                                                                             row.Feet>moreThanFeet || 
                                                                             row.Metres<lessThanMeters || 
                                                                             row.Feet<lessThanFeet)){
@@ -142,7 +161,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
         if(req.query.m){
             const mountain=req.query.m
 
-            const data=await Mountains.find({Mountain:mountain},"-_id Mountain Metres Feet Range Location_and_Notes" );
+            const data=await Mountains.find({Mountain:{"$regex":mountain, "$options":"i"}},"-_id Mountain Metres Feet Range Location_and_Notes" );
             
             if(data.length===0) return res.status(404).json({msg:'request not found'});
                     
@@ -159,7 +178,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
                         && req.query.c===undefined){
 
             const range=req.query.r
-            const data=await Mountains.find({Range:range},"-_id Mountain Metres Feet Range Location_and_Notes" );
+            const data=await Mountains.find({Range:{"$regex":range, "$options":"i"}},"-_id Mountain Metres Feet Range Location_and_Notes" );
             
             if(data.length===0) return res.status(404).json({msg:'request not found'});
                     
@@ -179,7 +198,7 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
             const moreThanMeters=Number(req.query.mtm)
            
             const data=await Mountains.find({Metres:{$gt:moreThanMeters}},"-_id Mountain Metres Feet Range Location_and_Notes" );
-            console.log(data)
+           // console.log(data)
             if(data.length===0) return res.status(404).json({msg:'request not found'});
                     
             const numOfResults=data.length;
@@ -244,11 +263,12 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
                             && req.query.r===undefined){
                         
             const country=req.query.c
+            const regex = new RegExp( '(' + country + ')', 'gi' );
             const rows=await Mountains.find({},"-_id Mountain Metres Feet Range Location_and_Notes")
-            
+           
                 const data=[]
                 rows.forEach(row=>{
-                    if(row.Location_and_Notes.includes(country)){
+                    if(row.Location_and_Notes.match(regex)){
                         data.push(row)
                     }
                     return data
@@ -274,9 +294,12 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
             
     }catch(error){
         console.log(error)
-        res.status(500).json();
-    }
-    
+        res.status(500).json({error:"Server Error"});    
+    }   
+});
+
+app.get("*", (req,res)=>{
+    res.status(404).render("error.ejs")
 })
 
 const port=process.env.PORT || 8080

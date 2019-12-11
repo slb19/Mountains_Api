@@ -6,7 +6,8 @@ const usersSchema= new mongoose.Schema({
    name:{
        type:String,
        required:true,
-       trim:true
+       trim:true,
+       minlength:3
    },
    email:{
        type:String,
@@ -19,16 +20,6 @@ const usersSchema= new mongoose.Schema({
            }
        }
    },
-   password:{
-       type:String,
-       trim:true,
-       required:true,
-       validate(value){
-           if(value.length<6){
-               throw new Error("Password must be more than 6 characters")
-           }
-       }
-   },
    apiKey:{
        type:String,
        required:true
@@ -38,7 +29,7 @@ const usersSchema= new mongoose.Schema({
        default:Date.now
    }
 });
-
+/*
 usersSchema.pre("save", async function(next){
     const user=this;
 
@@ -48,7 +39,7 @@ usersSchema.pre("save", async function(next){
         }
         next();
 });
-
+*/
 const Users=mongoose.model("Users",usersSchema);
 
 module.exports=Users

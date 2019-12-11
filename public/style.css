@@ -1,0 +1,170 @@
+*{
+    padding: 0;
+    margin:0;
+    box-sizing:border-box;
+   
+    }
+    
+    html,body{
+      height:auto;
+      width:100%
+  }
+  
+    .bg-image{
+      height:100vh;
+      width:100%;
+      background-image: url(m1.jpg);
+      background-repeat: no-repeat;
+      background-size:cover;
+    
+      }
+
+  .nav-link:hover {
+    transform: scale(1.1);
+  }
+
+  .navbar-brand{
+    font-family: 'Monoton', cursive;
+    padding-right:10px;
+  }
+  .contact{
+    display:flex;
+    flex-direction: row;
+  }
+  .fb{
+    margin-top: 10px;
+    margin-left:4px;
+    
+  }
+  .apkey{
+    padding-bottom:25px;
+    border-bottom:1px solid white;
+  }
+  #s-modal{
+    width:95%;
+    border:solid grey 1px;
+    border-radius: 6px;
+    margin:0 auto;
+    background-color: rgba(0,0,0,0.7);
+    visibility: hidden;
+  }
+  .close-button{
+    cursor: pointer;
+    background:none;
+    outline:none;
+    font-size: 1.2rem;
+    color:white;
+    padding-right:3px;
+    display:inline;
+    
+  }
+
+  #submit-ok{
+    margin-top:9px;
+    color:white;
+    padding:2px 2px 12px 2px;
+    text-align: center;
+   
+    /*visibility:hidden*/
+  }
+
+  .line{
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+  }
+
+  .form-inline .form-control{
+      width:130px;
+  }
+
+  .side-form1{
+    margin:0 auto;
+    margin-top:20px;
+    color:rgb(231, 229, 229);
+    /*background-color: rgba(48, 27, 24, 0.7);*/
+    
+}
+
+.form-control{
+  font-size: 1em;
+  height: 2rem;
+}
+
+.col-form-label-sm{
+  font-size:1.07rem;
+
+}
+
+.heading{
+  text-shadow: 0 2 4px rgb(49, 42, 42);
+}
+
+.ap{
+  margin-top:100px;
+  font-size:2.8rem;
+  
+}
+.ap1{
+  margin-top:120px;
+  font-size:2.8rem;
+  
+}
+
+.link{
+  background-color:rgb(233, 233, 233);
+  padding:5px;
+  border:solid rgb(161, 161, 161) 1px;
+  margin-bottom:50px;
+}
+
+td{
+  border: 1px solid #dddddd;
+  padding: 8px;
+}
+
+th{
+  text-align:center;
+  border: 2px solid #dddddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: rgb(233, 233, 233);
+}
+
+  @media (max-width:768px) {
+    .form-inline {
+        display:flex;
+        flex-direction: column;
+       
+    }
+    .form-inline .form-control{
+        width:100%;
+    }
+    .bt{
+        width:50%;
+    }
+    .line{
+        border-right: 0px solid white;
+        border-left: 0px solid white;
+    }
+   
+    .ap{
+      margin-top:250px;
+      text-align:center
+    }
+    .ap1{
+      margin-top:270px;
+      text-align:center
+    }
+
+    .contact{
+      margin-left:28px;
+    }
+
+    .fb{
+      margin-left:9px;
+      
+    }
+    
+}

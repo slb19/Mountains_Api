@@ -36,7 +36,7 @@ const mountainsSchema= new mongoose.Schema({
 const Mountains=mongoose.model("mountains",mountainsSchema);
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/mountainsApi", {useNewUrlParser: true ,
+mongoose.connect("mongodb://127.0.0.1:27017/mountainsApi-test", {useNewUrlParser: true ,
                                                             useCreateIndex:true ,
                                                             useFindAndModify:false,
                                                             useUnifiedTopology: true});

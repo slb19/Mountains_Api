@@ -2,12 +2,8 @@ const express=require("express");
 const mongoose=require("mongoose");
 const uuidv4=require("uuid/v4");
 const bodyParser=require("body-parser")
-const cors=require("cors");
-const helmet=require("helmet");
 
 const app=express();
-app.use(cors());
-app.use(helmet());
 
 const Mountains=require("./models/mountains.js");
 const Users=require("./models/users.js")
@@ -18,7 +14,7 @@ app.use(express.json());
 app.use(express.static(__dirname+"/public"));
 app.use(bodyParser.urlencoded({extended:true}));
 
-mongoose.connect("mongodb://127.0.0.1:27017/mountainsApi", {useNewUrlParser: true ,
+mongoose.connect("mongodb://127.0.0.1:27017/mountainsApi-test", {useNewUrlParser: true ,
                                                             useCreateIndex:true ,
                                                             useFindAndModify:false,
                                                             useUnifiedTopology: true}).catch(error=>console.log(error));
@@ -305,9 +301,12 @@ app.get("/api/mountains", dataValidation,async(req,res)=>{
 app.get("*", (req,res)=>{
     res.status(404).render("error.ejs")
 })
-
+/*
 const port=process.env.PORT || 8080
 
 app.listen(port,()=>{
     console.log(`MountainsApi has started port: ${port}`)
 });
+*/
+
+module.exports=app

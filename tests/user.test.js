@@ -12,7 +12,7 @@ const defaultUser={
     _id:defaultUserId,
     name:"testDefault",
     email:"testDefault@test1.com",
-    apiKey:"13bfa048-4098-41be-8753-accab3633b90"
+    //apiKey:apiKey
 }
 
 beforeEach(async()=>{

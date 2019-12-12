@@ -245,7 +245,7 @@
     }).then(res=>{
       return res.json();
     }).then(data=>{
-      console.log(data)
+      //console.log(data)
       if(data.error){
         document.getElementById("submit-ok").textContent=data.error
         document.getElementById("s-modal").style.visibility="visible";

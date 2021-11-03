@@ -14,7 +14,7 @@
     "helmet": "^3.21.2",
     "mongoose": "^5.7.12",
     "uuid": "^3.3.3",
-    "validator": "^12.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",
